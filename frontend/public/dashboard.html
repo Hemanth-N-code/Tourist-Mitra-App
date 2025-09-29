@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tourist Safety Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f9;
+  }
+  header {
+    background: #1e3a8a;
+    color: white;
+    padding: 15px;
+    text-align: center;
+  }
+  main {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    gap: 20px;
+  }
+  section {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  h2 {
+    margin-top: 0;
+    color: #1e3a8a;
+  }
+  button {
+    padding: 10px 15px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #1e6fb8;
+  }
+  #map {
+    height: 300px;
+    margin-top: 15px;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+  }
+  ul {
+    margin-top: 10px;
+    padding-left: 20px;
+  }
+  li {
+    margin-bottom: 5px;
+  }
+
+  /* Digital ID Card styling */
+  #idCard {
+    background: #3498db;
+    border: 2px solid #100f0f;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: left;
+    line-height: 1.6;
+    margin: 10px;
+  }
+  #idCard h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #fefefe;
+  }
+  #idCard p {
+    margin: 6px 0;
+    font-size: 15px;
+    color: #f4f6f9;
+  }
+  #idCard b {
+    color: #f7f8fb;
+  }
+  #fakeCallScreen {
+  display: none;
+  background: #0a0a0aee;
+  color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+#fakeCallScreen h2 {
+  margin-bottom: 10px;
+}
+
+.call-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.call-buttons button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: white;
+}
+
+.accept {
+  background: green;
+}
+
+.decline {
+  background: red;
+}
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0;
+  right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #3498db;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+
+</style>
+
+</head>
+<body>
+  <header>
+    <h1>Tourist Safety Dashboard</h1>
+    <div style="margin-bottom:15px;">
+  <label class="switch">
+    <input type="checkbox" id="voiceAssistToggle" onchange="toggleVoiceAssist()">
+    <span class="slider"></span>
+  </label>
+  <span style="margin-left:10px;font-weight:bold;">Voice Assistant SOS</span>
+</div>
+  </header>
+
+  <main>
+
+    <!-- Digital ID -->
+    <section id="idSection">
+      <h2>Your ID</h2>
+      <div id="idCard">Loading Digital ID...</div>
+    </section>
+
+    <!-- Nearest Help -->
+    <section id="helpSection">
+      <h2>Nearest Help</h2>
+      <button onclick="getNearestHelp()">Find Nearest Help</button>
+      <div id="helpResult">Click button to find help</div>
+      <div id="map"></div>
+    </section>
+
+    <!-- SOS -->
+    <!-- SOS -->
+<!-- SOS -->
+<section id="sosSection">
+  <h2>SOS Call</h2>
+  <button onclick="triggerSOS()">Trigger SOS</button>
+  <div id="sosStatus">No SOS triggered</div>
+
+  <!-- Call list (hidden initially) -->
+  <div id="callList" style="display:none; margin-top:10px;">
+    <h3>📞 Choose Contact</h3>
+    <ul style="list-style:none; padding:0;">
+      <li><button onclick="startFakeCall('Police')">🚓 Police</button></li>
+      <li><button onclick="startFakeCall('Prokshith')">👤 Prokshith</button></li>
+      <li><button onclick="startFakeCall('Helpline')">📞 Helpline</button></li>
+    </ul>
+  </div>
+
+  <!-- Fake call only inside SOS box -->
+  <div id="fakeCallScreen" style="display:none;">
+    <h2>📞 Incoming Call</h2>
+    <p id="callNumber"></p>
+    <div class="call-buttons">
+      <button class="accept" onclick="acceptCall()">✔</button>
+      <button class="decline" onclick="declineCall()">✖</button>
+    </div>
+    <p id="callStatus"></p>
+  </div>
+</section>
+
+  </main>
+
+
+
+  <script>
+    const backendUrl = "http://localhost:5000"; // adjust if needed
+    let map, userMarker;
+
+    // -------- Digital ID --------
+    async function loadDigitalID() {
+      try {
+        const res = await fetch(`${backendUrl}/api/digital-id/latest`);
+        const data = await res.json();
+        document.getElementById("idCard").innerHTML = `
+  <h3>Digital ID</h3>
+  <p><b>Name:</b> ${data.name}</p>
+  <p><b>Country:</b> ${data.nationality}</p>
+  <p><b>Passport:</b> ${data.passport}</p>
+`;
+
+      } catch (err) {
+        document.getElementById("idCard").innerText = "❌ Failed to load Digital ID";
+      }
+    }
+
+    // -------- Distance Function --------
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c; // in km
+    }
+
+    // -------- Nearest Help (show all) --------
+    async function getNearestHelp() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const { latitude, longitude } = pos.coords;
+
+      // Initialize map
+      if (!map) {
+        map = L.map("map").setView([latitude, longitude], 14);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "© OpenStreetMap contributors"
+        }).addTo(map);
+      }
+
+      // Add user marker
+      if (userMarker) map.removeLayer(userMarker);
+      userMarker = L.marker([latitude, longitude])
+        .addTo(map)
+        .bindPopup("<b>You are here</b>")
+        .openPopup();
+
+      // Overpass query (nodes + ways + relations)
+      const query = `
+      [out:json];
+      (
+        node(around:3000,${latitude},${longitude})[amenity~"hospital|police|pharmacy"];
+        way(around:3000,${latitude},${longitude})[amenity~"hospital|police|pharmacy"];
+        relation(around:3000,${latitude},${longitude})[amenity~"hospital|police|pharmacy"];
+      );
+      out center;
+      `;
+      const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.elements.length > 0) {
+          // Calculate distances and sort
+          const places = data.elements.map(place => {
+            const lat = place.lat || place.center?.lat;
+            const lon = place.lon || place.center?.lon;
+            return {
+              ...place,
+              lat,
+              lon,
+              distance: getDistance(latitude, longitude, lat, lon)
+            };
+          }).filter(p => p.lat && p.lon)
+            .sort((a, b) => a.distance - b.distance);
+
+          // List all help points
+          let resultsHTML = "<b>Nearby Help Locations:</b><ul>";
+
+          places.forEach(place => {
+            const distText = place.distance.toFixed(2) + " km";
+            const name = place.tags?.name || place.tags?.amenity || "Unknown";
+
+            // Add marker for each
+            L.marker([place.lat, place.lon])
+              .addTo(map)
+              .bindPopup(`<b>${name}</b><br>📏 ${distText}`);
+
+            resultsHTML += `<li><b>${name}</b> - ${distText}</li>`;
+          });
+
+          resultsHTML += "</ul>";
+          document.getElementById("helpResult").innerHTML = resultsHTML;
+
+          // 🔗 Log help request to backend
+          await fetch(`${backendUrl}/api/help-requests`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lat: latitude, lon: longitude })
+          });
+
+          // ✅ Add random CRIME RATE markers nearby
+          addCrimeMarkers(latitude, longitude);
+
+        } else {
+          document.getElementById("helpResult").innerText = "⚠️ No help found nearby";
+        }
+      } catch (err) {
+        document.getElementById("helpResult").innerText = "❌ Error fetching help";
+      }
+    });
+  } else {
+    document.getElementById("helpResult").innerText = "Geolocation not supported";
+  }
+}
+
+    // -------- SOS --------
+    // -------- SOS --------
+function triggerSOS() {
+  document.getElementById("sosStatus").innerText = "🔗 Connecting to server...";
+
+  // Hide everything else
+  document.getElementById("callList").style.display = "none";
+  document.getElementById("fakeCallScreen").style.display = "none";
+
+  // After 2 seconds, show call list
+  setTimeout(() => {
+    document.getElementById("sosStatus").innerText = "✅ Connected. Choose a contact to call.";
+    document.getElementById("callList").style.display = "block";
+  }, 2000);
+}
+
+function startFakeCall(contactName) {
+  document.getElementById("callList").style.display = "none"; // hide list
+  document.getElementById("fakeCallScreen").style.display = "block"; // show fake call
+  document.getElementById("callNumber").innerText = `From: ${contactName}`;
+  document.getElementById("callStatus").innerText = "📡 Ringing...";
+}
+
+function acceptCall() {
+  document.getElementById("callStatus").innerText = "✅ Call Connected";
+}
+
+function declineCall() {
+  document.getElementById("fakeCallScreen").style.display = "none";
+  document.getElementById("sosStatus").innerText = "❌ Call Ended";
+}
+function toggleVoiceAssist() {
+  const toggle = document.getElementById("voiceAssistToggle");
+  if (toggle.checked) {
+    alert("🎤 Voice Assistant SOS is ON");
+  } else {
+    alert("🔇 Voice Assistant SOS is OFF");
+  }
+}
+
+
+    // Auto-load Digital ID
+    loadDigitalID();
+  </script>
+</body>
+</html>

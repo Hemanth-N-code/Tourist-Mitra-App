@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Digital ID</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f4f8; }
+    form, .id-card { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background: white; }
+    .id-card { display: none; margin-top: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    input { width: 100%; padding: 8px; margin: 8px 0; border: 1px solid #aaa; border-radius: 5px; }
+    button { padding: 10px 15px; background: blue; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; }
+    button:hover { background: darkblue; }
+  </style>
+</head>
+<body>
+  <h1>Create Your Blockchain Digital ID</h1>
+  <form id="idForm">
+    <label>Name:</label>
+    <input type="text" id="name" required />
+
+    <label>Passport / Aadhar Number:</label>
+    <input type="text" id="passport" required />
+
+    <label>Nationality:</label>
+    <input type="text" id="nationality" required />
+
+    <label>Validity (days):</label>
+    <input type="number" id="validity" value="15" required />
+
+    <button type="submit">Generate ID</button>
+  </form>
+
+  <div class="id-card" id="idCard">
+    <h2>✅ Digital Tourist ID</h2>
+    <p><b>Name:</b> <span id="dispName"></span></p>
+    <p><b>Passport / Aadhar:</b> <span id="dispPassport"></span></p>
+    <p><b>Nationality:</b> <span id="dispNationality"></span></p>
+    <p><b>Validity:</b> <span id="dispValidity"></span> days</p>
+    <p><b>Blockchain Hash:</b> <span id="dispHash"></span></p>
+  </div>
+
+  <script>
+  document.getElementById("idForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const passport = document.getElementById("passport").value;
+    const nationality = document.getElementById("nationality").value;
+    const validity = document.getElementById("validity").value;
+
+    try {
+      const res = await fetch("http://localhost:5000/api/digital-id", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, passport, nationality, validity })
+      });
+
+      if (!res.ok) throw new Error("Failed to create ID");
+
+      const data = await res.json();
+
+      // Show ID card
+      document.getElementById("dispName").innerText = data.name;
+      document.getElementById("dispPassport").innerText = data.passport;
+      document.getElementById("dispNationality").innerText = data.nationality;
+      document.getElementById("dispValidity").innerText = data.validity;
+      document.getElementById("dispHash").innerText = data.hash;
+
+      document.getElementById("idCard").style.display = "block";
+    } catch (err) {
+      alert("Error creating ID: " + err.message);
+    }
+  });
+</script>
+</body>
+</html>

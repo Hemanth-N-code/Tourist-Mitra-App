@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Anomaly Detection - Location Check</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background: #f4f4f9;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background: #3498db;
+      color: white;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      color: orange;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Location Check</h1>
+  <p>Click the button below to check your current location safety.</p>
+  <button onclick="checkLocation()">Check Location</button>
+  <div id="result"></div>
+
+  <script>
+  function checkLocation() {
+    const resultEl = document.getElementById("result");
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude.toFixed(4);
+        const lon = position.coords.longitude.toFixed(4);
+
+        // Step 1: Show fake loading
+        resultEl.innerText = "🔍 Checking database for this location…";
+        resultEl.style.color = "Black";
+
+        // Step 2: After delay, show safe message with lat/lon
+        setTimeout(() => {
+          resultEl.innerText = `✅ This location is safe!\n(Lat: ${lat}, Lon: ${lon})`;
+          resultEl.style.color = "green";
+        }, 2000); // 2 seconds fake loading
+      }, showError);
+    } else {
+      resultEl.innerText = "Geolocation not supported!";
+      resultEl.style.color = "red";
+    }
+  }
+
+  function showError() {
+    const resultEl = document.getElementById("result");
+    resultEl.innerText = "Unable to retrieve location!";
+    resultEl.style.color = "red";
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tourist Safety Prototype</title>
+  <link rel="stylesheet" href="dashstyles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+  <header>
+    <h1>TOURIST MITRA </h1>
+  </header>
+
+  <main>
+    <!-- Digital ID -->
+    <section class="card">
+      <h2>Blockchain Digital ID</h2>
+      <p>Tourists receive secure, temporary digital IDs stored on blockchain.</p>
+      <button onclick="openSite('digital-id.html')">
+        View Sample ID
+      </button>
+    </section>
+
+    <!-- Mobile App -->
+    <section class="card">
+      <h2>Tourist Mitra App</h2>
+      <p>Features include SOS panic button, geo-fencing alerts, and family tracking.</p>
+      <button onclick="openSite('tourist-app.html')">
+        Launch App
+      </button>
+    </section>
+
+
+    <!-- AI -->
+<section class="card">
+  <h2>AI Anomaly Detection</h2>
+  <p>Detects unusual patterns like sudden drop-offs or prolonged inactivity.</p>
+  <button onclick="openSite('ai_check.html')">AI Check</button>
+</section>
+
+
+    <!-- Dashboard -->
+    <section class="card">
+  <h2>Dashboard</h2>
+  <p>Click below to open your safety dashboard.</p>
+  <button onclick="openSite('dashboard.html')">Open Dashboard</button>
+</section>
+<section class="card">
+      <h2>Offline Map</h2>
+      <p>Access maps even without an internet connection.</p>
+      <button onclick="openSite('offline-map.html')">Open Offline Map</button>
+    </section>
+
+  </main>
+<!--<div id="root"></div>-->
+
+  <script>
+    function openSite(url) {
+      window.open(url, "_blank"); // opens in new tab
+    }
+  </script>
+
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tourist Mobile App</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; background: #f5f5f5; }
+    .app-card { background: white; padding: 30px; border-radius: 15px; max-width: 400px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    img { width: 120px; margin-bottom: 20px; }
+    button { padding: 12px 20px; background: green; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+    button:hover { opacity: 0.9; }
+    #message { margin-top: 20px; font-size: 18px; font-weight: bold; color: blue; display: none; }
+  </style>
+</head>
+<body>
+  <div class="app-card">
+    <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" alt="App Logo">
+    <h2>Tourist Mitra App</h2>
+    <p>Stay safe with SOS, Geo-fencing, and Family Tracking features.</p>
+    <button id="actionBtn" onclick="installApp()">Install App</button>
+    <p id="message">✅ App Downloaded! Safe Journey 🌍✨</p>
+  </div>
+
+  <script>
+    function installApp() {
+      alert("✅ App Downloaded Successfully!");
+      document.getElementById("message").style.display = "block";
+
+      // Change button to "Uninstall"
+      let btn = document.getElementById("actionBtn");
+      btn.textContent = "Uninstall App";
+      btn.style.background = "red";
+      btn.setAttribute("onclick", "uninstallApp()");
+    }
+
+    function uninstallApp() {
+      alert("❌ App Uninstalled!");
+      document.getElementById("message").style.display = "none";
+
+      // Change button back to "Install"
+      let btn = document.getElementById("actionBtn");
+      btn.textContent = "Install App";
+      btn.style.background = "green";
+      btn.setAttribute("onclick", "installApp()");
+    }
+  </script>
+</body>
+</html>
